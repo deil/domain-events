@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainEvents", "DomainEvents\DomainEvents.csproj", "{E15174C7-9666-486A-8393-3331A8113699}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Events", "DomainEvents\Domain.Events.csproj", "{E15174C7-9666-486A-8393-3331A8113699}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Events.Examples", "DomainEvents.Examples\Domain.Events.Examples.csproj", "{5FAB1B0D-8C02-4734-9C03-5030F2CB7722}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,12 +11,16 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5FAB1B0D-8C02-4734-9C03-5030F2CB7722}.Debug|x86.ActiveCfg = Debug|x86
+		{5FAB1B0D-8C02-4734-9C03-5030F2CB7722}.Debug|x86.Build.0 = Debug|x86
+		{5FAB1B0D-8C02-4734-9C03-5030F2CB7722}.Release|x86.ActiveCfg = Release|x86
+		{5FAB1B0D-8C02-4734-9C03-5030F2CB7722}.Release|x86.Build.0 = Release|x86
 		{E15174C7-9666-486A-8393-3331A8113699}.Debug|x86.ActiveCfg = Debug|x86
 		{E15174C7-9666-486A-8393-3331A8113699}.Debug|x86.Build.0 = Debug|x86
 		{E15174C7-9666-486A-8393-3331A8113699}.Release|x86.ActiveCfg = Release|x86
 		{E15174C7-9666-486A-8393-3331A8113699}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = DomainEvents\DomainEvents.csproj
+		StartupItem = DomainEvents.Examples\Domain.Events.Examples.csproj
 	EndGlobalSection
 EndGlobal
