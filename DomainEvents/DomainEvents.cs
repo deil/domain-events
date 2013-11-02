@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.Practices.ServiceLocation;
 
 namespace Domain.Events
 {
     public static class DomainEvents
     {
+        public static IServiceLocator ServiceLocator { get; set; }
+
         public static IDisposable Register<T>(Action<T> callback) where T : IEvent
         {
             if (_registeredHandlers == null)
@@ -24,44 +27,12 @@ namespace Domain.Events
 
         public static void Raise<T>(T args) where T : IDomainEvent
         {
-            if (_registeredHandlers != null)
-            {
-                foreach (var handler in _registeredHandlers)
-                {
-                    if (handler is Action<T>)
-                    {
-                        try
-                        {
-                            ((Action<T>)handler)(args);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine(ex.ToString());
-                        }
-                    }
-                }
-            }
+            RaiseEvent(args, false);
         }
 
         public static void FailWith<T>(T args) where T : IFailureEvent
         {
-            if (_registeredHandlers != null)
-            {
-                foreach (var handler in _registeredHandlers)
-                {
-                    if (handler is Action<T>)
-                    {
-                        try
-                        {
-                            ((Action<T>)handler)(args);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine(ex.ToString());
-                        }
-                    }
-                }
-            }
+            RaiseEvent(args, true);
         }
 
         public static void ClearCallbacks()
@@ -73,6 +44,41 @@ namespace Domain.Events
 
         [ThreadStatic]
         private static List<Delegate> _registeredHandlers;
+
+        private static void RaiseEvent<T>(T args, bool ignored) where T : IEvent
+        {
+            if (ServiceLocator != null)
+            {
+                foreach (var handler in ServiceLocator.GetAllInstances<IHandles<T>>())
+                {
+                    try
+                    {
+                        handler.Handle(args);
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }
+            }
+
+            if (_registeredHandlers != null)
+            {
+                foreach (var handler in _registeredHandlers)
+                {
+                    if (handler is Action<T>)
+                    {
+                        try
+                        {
+                            ((Action<T>)handler)(args);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.ToString());
+                        }
+                    }
+                }
+            }
+        }
 
         #endregion
     }
