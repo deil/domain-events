@@ -11,6 +11,7 @@ namespace Domain.Events.Examples
             using (DomainEvents.Register((AllTestsPassedEvent e) => Console.WriteLine("All tests passed!")))
             {
                 DomainEvents.Raise(new AllTestsPassedEvent());
+                DomainEvents.FailWith(new PreconditionFailedEvent());
             }
 
             DomainEvents.ClearCallbacks();

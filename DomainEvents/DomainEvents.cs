@@ -47,6 +47,12 @@ namespace Domain.Events
             RaiseEvent(args, false);
         }
 
+        /// <summary>
+        /// Raises a failure event on current thread.
+        /// Throws exception if no handlers or callbacks are registered.
+        /// </summary>
+        /// <param name="args">Event instance</param>
+        /// <typeparam name="T">Type of failure event</typeparam>
         public static void FailWith<T>(T args) where T : IFailureEvent
         {
             RaiseEvent(args, true);
@@ -65,14 +71,16 @@ namespace Domain.Events
         [ThreadStatic]
         private static List<Delegate> _registeredHandlers;
 
-        private static void RaiseEvent<T>(T args, bool ignored) where T : IEvent
+        private static void RaiseEvent<T>(T args, bool ensureCallbacksExecuted) where T : IEvent
         {
+            var eventWasHandled = false;
             if (ServiceLocator != null)
             {
                 foreach (var handler in ServiceLocator.GetAllInstances<IHandles<T>>())
                 {
                     try
                     {
+                        eventWasHandled = true;
                         handler.Handle(args);
                     }
                     catch (Exception ex)
@@ -89,6 +97,7 @@ namespace Domain.Events
                     {
                         try
                         {
+                            eventWasHandled = true;
                             ((Action<T>)handler)(args);
                         }
                         catch (Exception ex)
@@ -97,6 +106,11 @@ namespace Domain.Events
                         }
                     }
                 }
+            }
+
+            if (ensureCallbacksExecuted && !eventWasHandled)
+            {
+                throw new ApplicationException(string.Format("Event of type {0} was not handled.", typeof(T).FullName));
             }
         }
 
