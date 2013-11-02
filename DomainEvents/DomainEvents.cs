@@ -5,10 +5,22 @@ using Microsoft.Practices.ServiceLocation;
 
 namespace Domain.Events
 {
+    /// <summary>
+    /// Class for raising and handling events.
+    /// </summary>
     public static class DomainEvents
     {
+        /// <summary>
+        /// Reference to service locator instance to query event handlers from.
+        /// </summary>
+        /// <value>Service locator instance</value>
         public static IServiceLocator ServiceLocator { get; set; }
 
+        /// <summary>
+        /// Registers callback on current thread for specified event type.
+        /// </summary>
+        /// <param name="callback">Callback</param>
+        /// <typeparam name="T">Event type</typeparam>
         public static IDisposable Register<T>(Action<T> callback) where T : IEvent
         {
             if (_registeredHandlers == null)
@@ -25,6 +37,11 @@ namespace Domain.Events
                 _registeredHandlers.Remove(callback);
         }
 
+        /// <summary>
+        /// Raises an event on current thread.
+        /// </summary>
+        /// <param name="args">Event instance</param>
+        /// <typeparam name="T">Event type</typeparam>
         public static void Raise<T>(T args) where T : IDomainEvent
         {
             RaiseEvent(args, false);
@@ -35,6 +52,9 @@ namespace Domain.Events
             RaiseEvent(args, true);
         }
 
+        /// <summary>
+        /// Clears all registered callbacks for current thread.
+        /// </summary>
         public static void ClearCallbacks()
         {
             _registeredHandlers = null;
